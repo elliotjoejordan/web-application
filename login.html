@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Login Page</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                background-color: #DEF2DB;
+                font-family: font-family: Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+                font:Georgia;
+                padding:15px 25px 50px;
+            }
+            #to{
+                colour:#A9A9A9;
+                display:none;
+            }
+            ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+
+        </style>
+
+
+
+
+
+    </head>
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+
+        <nav class="navbar navbar-inverse">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="/events2017/index.html">Events Searcher</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="/events2017/index.html">Index</a></li>
+                <li><a href="/events2017/admin.html">Admin</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+    </nav>
+    <br>
+    <br>
+    <br>
+
+        <h1>Login Page</h1>
+
+
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-xs-10 col-md-7">
+                <form name="searchForm">
+                Username:<br>
+                <input type="text" id="username" name="username">
+                <br>
+                Password:<br>
+                <input type="password" id="password" name="password">
+                <br><br>
+            </form>
+            <button onclick="log()"> submit </button>
+            <br>
+            <br>
+        </div>
+            <div class="col-xs-2 col-md-5"></div>
+          </div>
+          <div class="row">
+            <div class="col-xs-11 col-md-7"></div>
+            <div class="col-xs-1 col-md-5"></div>
+          </div>
+        </div>
+        <script>
+        // document.getElementById("theButton").onclick = function() {log()};
+
+            function log(){
+                 var usernameLogin = document.getElementById("username").value;
+                 var passwordLogin = document.getElementById("password").value;
+                 var data={username:usernameLogin, password:passwordLogin};
+                $.post("/events2017/logCheck", data, function(res){
+                    var result = res;
+                    if(result == false){
+                        window.alert("Login failed, Username or Password incorrect");
+                        location.href="/events2017/login.html";
+                    }
+                    else{
+                        location.href="/events2017/admin.html";
+                    }
+                })
+            }
+
+
+        </script>
+
+    </body>
+</html>

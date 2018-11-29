@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Web Page</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0">
+        <style>
+            body {
+                background-color: #DEF2DB;
+                font-family: font-family: Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+                font:Georgia;
+                padding:15px 5px 0px 50px;
+            }
+            #to{
+                colour:#A9A9A9;
+                display:none;
+            }
+            ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+            p {word-wrap:break-word;}
+            hr {
+                margin: 2px 0;
+                border: 2px solid #A9A9A9;
+            }
+            @media screen and (max-width: 350px) {
+                body {
+                    padding-left: 5px;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+
+        <nav class="navbar navbar-inverse">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="/events2017/index.html">Events Searcher</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="/events2017/index.html">Index</a></li>
+                <li><a href="/events2017/admin.html">Admin</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+    </nav>
+    <br>
+    <br>
+    <br>
+
+        <h1>Events 2017 </h1>
+
+        <script>
+
+            function searchScript(){
+                var titleSearch = document.getElementById("titleToSearch").value;
+                var dateSearch = document.getElementById("dateToSearch").value;
+                $.ajax({
+                    url:"/events2017/events/search" + "?title=" + titleSearch + "&date=" + dateSearch,
+                    type:'GET',
+                    dataType:'json',
+                    success: function(res) {
+                        if(Object.keys(res)[0]!='error'){
+                        document.getElementById("results").innerHTML = "Search Results:";
+                        var listEvents = res["events"]
+                        console.log(listEvents[0]);
+                        for (i=0;i<listEvents.length;i++){
+                            var printEvents = '<div>';
+                            printEvents += '<h3 class="present'+i+'">' + listEvents[i]['event_id'] + '</h3>';
+                            printEvents += '<h2 class="present'+i+'">' +"Title: "+ listEvents[i]['title'] + '</h2>';
+                            printEvents += '<h3 class="present'+i+'">' +"Date: "+ listEvents[i]['date'].substring(0,10) +" - "+listEvents[i]['date'].substring(11,16)+ '</h3>';
+                            printEvents += '<p id="to" class="hidden'+i+'">' +"Blurb: "+ listEvents[i]['blurb'] + '</p>';
+                            printEvents += '<p id="to" class="hidden'+i+'">' +"Url: "+ listEvents[i]['url'] + '</p>';
+                            printEvents += '<p id="to" class="hidden'+i+'"> </p>';
+                            printEvents += '<p class="present'+i+'">' +"Venue: "+ listEvents[i]['venue']['name'] + '</p>';
+                            printEvents += '<p id="to" class="hidden'+i+'">    ' + listEvents[i]['venue']['postcode'] + '</p>';
+                            printEvents += '<p id="to" class="hidden'+i+'">    ' + listEvents[i]['venue']['town'] + '</p>';
+                            printEvents += '<p id="to" class="hidden'+i+'">    ' + listEvents[i]['venue']['url'] + '</p>';
+                            printEvents += '<p id="to" class="hidden'+i+'">    ' + listEvents[i]['venue']['icon'] + '</p>';
+                            printEvents += '<p id="to" class="hidden'+i+'">    ' + listEvents[i]['venue']['venue_id'] + '</p>';
+                            printEvents += '</div>';
+                            printEvents += '<hr/>';
+                            $(results).append(printEvents);
+                        }
+
+
+                    $(document).ready(function(){
+                        $(".present0").click(function(){
+                            $(".hidden0").slideToggle(750);
+                        });
+                    });
+                    $(document).ready(function(){
+                        $(".present1").click(function(){
+                            $(".hidden1").slideToggle(750);
+                        });
+                    });
+                    $(document).ready(function(){
+                        $(".present2").click(function(){
+                            $(".hidden2").slideToggle(750);
+                        });
+                    });
+                    $(document).ready(function(){
+                        $(".present3").click(function(){
+                            $(".hidden3").slideToggle(750);
+                        });
+                    });
+                    $(document).ready(function(){
+                        $(".present4").click(function(){
+                            $(".hidden4").slideToggle(750);
+                        });
+                    });
+                    document.searchForm.reset();
+                }
+                else{
+                    window.alert(Object.keys(res)[0] +": "+ Object.values(res)[0]);
+                }
+                }
+                })
+            }
+        </script>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-xs-10 col-md-7">
+                <form name="searchForm">
+                Event Title:<br>
+                <input type="text" id="titleToSearch" name="titleToSearch">
+                <br>
+                Date:<br>
+                <input type="text" id="dateToSearch" name="dateToSearch">
+                <br><br>
+            </form>
+            <button onclick = 'JavaScript:searchScript()'> submit </button>
+            <br>
+            <br>
+        </div>
+            <div class="col-xs-2 col-md-5"></div>
+          </div>
+          <div class="row">
+            <div class="col-xs-11 col-md-7">
+            <p id='results'>Enter an event name, keyword, or date
+            </p>
+        </div>
+            <div class="col-xs-1 col-md-5"></div>
+          </div>
+        </div>
+
+
+    </body>
+</html>

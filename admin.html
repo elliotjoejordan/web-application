@@ -1,0 +1,239 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Events Searcher</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                background-color: #DEF2DB;
+                font-family: font-family: Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+                font:Georgia;
+                padding:15px 25px 50px;
+            }
+            #to{
+                colour:#A9A9A9;
+                display:none;
+            }
+            ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+            #venueList{
+                padding: 5px 20px 10px;
+            }
+            p {word-wrap:break-word;}
+        </style>
+    </head>
+    <script>
+    $.get('/events2017/cookieCheck', function(res){
+        var answer = res;
+        if(answer == false){
+            location.href="/events2017/login.html";
+        }
+        else{
+
+        }
+    })
+    </script>
+    <body>
+        <script>
+
+            function getVenues(){
+                $(venueList).empty();
+                $.ajax({
+                    url:"/events2017/venues",
+                    type:'GET',
+                    dataType:'json',
+                    success: function(res) {
+                        var listVenues = res["venues"]
+                        for (i=0;i<Object.values(listVenues).length;i++){
+                            var printVenues = '<div>';
+                            printVenues += '<h3>' + Object.keys(listVenues)[i] + '</h3>';
+                            printVenues += '<h2>Name: ' + Object.values(listVenues)[i]['name'] + '</h2>';
+                            printVenues += '<p>Postcode: ' + Object.values(listVenues)[i]['postcode'] + '</p>';
+                            printVenues += '<p>Town: ' + Object.values(listVenues)[i]['town'] + '</p>';
+                            printVenues += '<p>Url: ' + Object.values(listVenues)[i]['url'] + '</p>';
+                            printVenues += '<p>Icon: ' + Object.values(listVenues)[i]['icon'] + '</p>';
+                            printVenues += '<br>'
+                            printVenues += '</div>'
+                            $(venueList).append(printVenues);
+                        }
+                }
+                })
+            }
+            function addVenue(){
+                var nameAdd = document.getElementById("nameAdd").value;
+                var postcodeAdd = document.getElementById("postcodeAdd").value;
+                var townAdd = document.getElementById("townAdd").value;
+                var urlAdd = document.getElementById("urlAdd").value;
+                var iconAdd = document.getElementById("iconAdd").value;
+                $.ajax({
+                    url:"/events2017/venues/add",
+                    type:'POST',
+                    dataType:'json',
+                    data:{auth_token:'concertina', name:nameAdd, postcode:postcodeAdd, town:townAdd, url:urlAdd, icon:iconAdd},
+                    success: function(res){
+                        if(Object.keys(res)[0]!='error'){
+                            document.getElementById("venueList").innerHTML = "";
+                            var listVenues = res["venues"]
+                            for (i=0;i<Object.values(listVenues).length;i++){
+                                var printVenues = '<div>';
+                                printVenues += '<h3>' + Object.keys(listVenues)[i] + '</h3>';
+                                printVenues += '<h2>Name: ' + Object.values(listVenues)[i]['name'] + '</h2>';
+                                printVenues += '<p>Postcode: ' + Object.values(listVenues)[i]['postcode'] + '</p>';
+                                printVenues += '<p>Town: ' + Object.values(listVenues)[i]['town'] + '</p>';
+                                printVenues += '<p>Url: ' + Object.values(listVenues)[i]['url'] + '</p>';
+                                printVenues += '<p>Icon: ' + Object.values(listVenues)[i]['icon'] + '</p>';
+                                printVenues += '<br>'
+                                printVenues += '</div>'
+                                $(venueList).append(printVenues);
+                            }
+                            document.addVenueForm.reset();
+                            window.alert("Success, Venue added");
+                        }
+                        else{
+                            window.alert(Object.keys(res)[0] +": "+ Object.values(res)[0]);
+                        }
+                    }
+                })
+            }
+            function addEvent(){
+                var eventidAdd = document.getElementById("eventidAdd").value;
+                var titleAdd = document.getElementById("titleAdd").value;
+                var blurbAdd = document.getElementById("blurbAdd").value;
+                var dateAdd = document.getElementById("dateAdd").value;
+                var eventUrlAdd = document.getElementById("eventUrlAdd").value;
+                var venueidAdd = document.getElementById("venueidAdd").value;
+                $.ajax({
+                    url:"/events2017/events/add",
+                    type:'POST',
+                    dataType:'json',
+                    data:{auth_token:'concertina', event_id:eventidAdd, title:titleAdd, blurb:blurbAdd, date:dateAdd, url:eventUrlAdd,venue_id:venueidAdd},
+                    success: function(res){
+                        if (Object.keys(res)[0] == 'error'){
+                            window.alert(Object.keys(res)[0] +": "+ Object.values(res)[0]);
+                        }
+                        else{
+                            document.addEventForm.reset();
+                            window.alert("Success, Event added");
+                        }
+                    }
+                })
+            }
+
+        </script>
+
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <nav class="navbar navbar-inverse">
+              <div class="container-fluid">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="/events2017/index.html">Events Searcher</a>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                  <ul class="nav navbar-nav">
+                    <li><a href="/events2017/index.html">Index</a></li>
+                    <li class="active"><a href="/events2017/admin.html">Admin</a></li>
+                  </ul>
+                </div>
+              </div>
+            </nav>
+        </nav>
+        <br>
+        <br>
+        <br>
+        <h1> Admin Page</h1>
+
+
+
+
+        <div class="container">
+          <h3>Select an option:</h3>
+          <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" onclick="getVenues()">List of Venues</a>
+                </h4>
+              </div>
+              <div id="collapse1" class="panel-collapse collapse">
+                <div class="panel-body"></div>
+                <p id='venueList'>
+                </p>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Add a Venue</a>
+                </h4>
+              </div>
+              <div id="collapse2" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <form name="addVenueForm">
+                        Name:<br>
+                        <input type="text" id="nameAdd" name="nameAdd">
+                        <br>
+                        Postcode:<br>
+                        <input type="text" id="postcodeAdd" name="dateToSearch">
+                        <br>
+                        Town:<br>
+                        <input type="text" id="townAdd" name="townAdd">
+                        <br>
+                        Url:<br>
+                        <input type="text" id="urlAdd" name="urlAdd">
+                        <br>
+                        Icon:<br>
+                        <input type="text" id="iconAdd" name="iconAdd">
+                        <br>
+                        <br>
+                    </form>
+                    <button onclick = 'JavaScript:addVenue()'> submit </button>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Add an Event</a>
+                </h4>
+              </div>
+              <div id="collapse3" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <form name="addEventForm">
+                        Event id:<br>
+                        <input type="text" id="eventidAdd" name="eventidAdd">
+                        <br>
+                        Title:<br>
+                        <input type="text" id="titleAdd" name="titleAdd">
+                        <br>
+                        Blurb:<br>
+                        <input type="text" id="blurbAdd" name="blurbAdd">
+                        <br>
+                        Date:<br>
+                        <input type="text" id="dateAdd" name="dateAdd">
+                        <br>
+                        Url:<br>
+                        <input type="text" id="eventUrlAdd" name="eventUrlAdd">
+                        <br>
+                        Venue id:<br>
+                        <input type="text" id="venueidAdd" name="venueidAdd">
+                        <br>
+                        <br>
+                    </form>
+                    <button onclick = 'JavaScript:addEvent()'> submit </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </body>
+</html>
